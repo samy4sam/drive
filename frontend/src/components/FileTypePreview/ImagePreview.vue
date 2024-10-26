@@ -65,7 +65,7 @@ emitter.on("printFile", () => {
         <style>
           img {
             max-width: 100%;
-            height: auto;
+            height: 100%;
           }
         </style>
       </head>
