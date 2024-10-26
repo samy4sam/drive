@@ -8,27 +8,20 @@
         {{ i }}
       </span>
 
-      <div v-if="entities.length" class="grid-container mt-2 mb-4">
+      <div v-if="entities.length" class="grid-container">
         <div
           v-for="file in entities"
           :id="file.name"
           :key="file.name"
-          class="rounded-lg border group select-none entity cursor-pointer relative group:"
+          class="grid-item entity cursor-pointer relative"
           :class="[
-            file.is_group && foldersBefore
-              ? 'p-3 w-[162px] sm:w-[172px] h-[98px] sm:h-[108px]'
-              : 'w-[162px] h-[162px] sm:w-[172px] sm:h-[172px]',
             selectedEntities.includes(file)
               ? 'bg-gray-100 border-gray-300'
               : 'border-gray-200 hover:shadow-xl',
           ]"
           draggable="false"
-          @[action]="dblClickEntity(file)"
-          @click="selectEntity(file, $event, displayOrderedEntities)"
-          @mousedown.stop
-          @contextmenu="
-            handleEntityContext(file, $event, displayOrderedEntities)
-          "
+          @click="dblClickEntity(file)"
+          @contextmenu="handleEntityContext(file, $event, displayOrderedEntities)"
         >
           <Button
             :variant="'subtle'"
@@ -39,9 +32,7 @@
                 ? 'visible '
                 : 'sm:bg-gray-100 visible sm:invisible',
             ]"
-            @click.stop="
-              handleEntityContext(file, $event, displayOrderedEntities)
-            "
+            @click.stop="handleEntityContext(file, $event, displayOrderedEntities)"
           >
             <FeatherIcon class="h-4" name="more-horizontal" />
           </Button>
@@ -89,14 +80,6 @@ export default {
       type: Object,
       default: null,
     },
-    folders: {
-      type: Array,
-      default: null,
-    },
-    files: {
-      type: Array,
-      default: null,
-    },
     selectedEntities: {
       type: Array,
       default: null,
@@ -110,8 +93,6 @@ export default {
     "entitySelected",
     "openEntity",
     "showEntityContext",
-    "showEmptyEntityContext",
-    "fetchFolderContents",
     "updateOffset",
   ],
   setup(props, { emit }) {
@@ -129,17 +110,9 @@ export default {
       }
     )
 
-    return { container, useInfiniteScroll }
+    return { container }
   },
   computed: {
-    action() {
-      if (window.innerWidth < 640) return "click"
-      if (this.$store.state.singleClick) {
-        return "click"
-      } else {
-        return "dblclick"
-      }
-    },
     isEmpty() {
       return !this.$store.state.currentViewEntites?.length
     },
@@ -218,10 +191,18 @@ export default {
   },
 }
 </script>
+
 <style scoped>
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(162px, 1fr));
   gap: 20px;
+}
+.grid-item {
+  width: 100%;
+  height: 160px; /* Fixed height for uniformity */
+  overflow: hidden;
+  border-radius: 8px; /* Customize as needed */
+  position: relative;
 }
 </style>
